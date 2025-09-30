@@ -252,7 +252,7 @@ Creating a visual of Giant Kelp in depth zones at the Channel Islands
 ci_swath <- swath %>% 
   filter(campus == "UCSB" & classcode == "MACPYRAD")
 
-ggplot(ci_swath, aes())
+#ggplot(ci_swath, aes())
 ```
 
 ## Finished?
