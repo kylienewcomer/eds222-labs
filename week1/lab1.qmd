@@ -108,8 +108,7 @@ penguins_sum <- penguins %>%
   mutate(prop_pen = n / sum(n)) %>% 
   ungroup() %>% 
   group_by(island) %>% 
-  mutate(prop_isl = n / sum(n)) %>% 
-  pivot_longer(cols = 'prop_pen:prop_isl', names_to = ')
+  mutate(prop_isl = n / sum(n))
 
 
 ```
@@ -164,9 +163,7 @@ penguins %>%
 
 ```
 
-**Q5 What's the difference between a histogram and a bar plot?**
-Histogram uses bins- bar plots use categorical while histograms use continuous
-
+**Q5 What's the difference between a histogram and a bar plot?** Histogram uses bins- bar plots use categorical while histograms use continuous
 
 ### Mean and standard deviation
 
@@ -242,17 +239,42 @@ Find a dataset containing multiple categorical and continuous variables. You'll 
 ```{r}
 swath <- read_csv(here::here("week1", "data", "PISCO_kelpforest_swath.1.3.csv"))
 ```
+
 ```{r}
 view(swath)
 ```
 
-
 Creating a visual of Giant Kelp in depth zones at the Channel Islands
+
 ```{r}
 ci_swath <- swath %>% 
   filter(campus == "UCSB" & classcode == "MACPYRAD")
 
 #ggplot(ci_swath, aes())
+
+```
+
+```{r}
+library(paletteer)
+```
+
+
+```{r}
+kelp_sum <- ci_swath %>%
+  filter(zone != "SPECIALO", stringr::str_detect(site, pattern = "SCI")) %>% 
+  group_by(year, zone) %>% 
+  mutate(stipes = (count * size)/18, kelp = mean(stipes)) %>% 
+  ungroup()
+
+kelp_plot <- ggplot(kelp_sum, aes(year, kelp, color = zone)) +
+  geom_point() +
+  geom_line() +
+  scale_color_paletteer_d("nationalparkcolors::ChannelIslands") +
+  labs(x = "Year",
+       y = "Number of Kelp Stipes per 10 m^2",
+       title = "Average Number Kelp Stipes at Santa Cruz Island")
+
+ggsave(here::here("week1", "kelp_plot.png"), height = 5, width = 8)
 ```
 
 ## Finished?
